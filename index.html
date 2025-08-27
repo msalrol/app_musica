@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API música prueba</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<script src="https://unpkg.com/feather-icons"></script>
+
+<body class="">
+
+    <div class="container-fluid">
+        <div class="aviso-mostrar">INICIA SESIÓN PARA GUARDAR FAVORITOS</div>
+        <div class="row g-0 custom-gutter">
+
+            <!-- Columna lateral izquierda -->
+            <div class="col-12 col-md-3 fade-in-col">
+                <div class="posicion">
+                    <!-- Input de búsqueda -->
+                    <div class="row">
+                        <div class="col-7 col-md-8">
+                            <div class="pb-1 pb-md-3 custom-input">
+                                <form id="buscar">
+                                    <input type="text" name="busqueda" id="searchInput" placeholder="SEARCH..."
+                                        class="form-control custom-input">
+                                </form>
+                                <div>
+                                    <button onclick="document.location='index.html'" class="mt-4" style="border:0px;"><i
+                                            data-feather="home"></i></button>
+                                            <!-- BOTÓN FAVORITOS ANTIGUO
+                                    <button class="btn btn-favourites mt-4" style="padding:3px!important;float:right;">
+                                        <i class="icono-estrella" data-feather="star"></i>
+                                    </button>-->
+                                    <button id="myalbums" style="font-size:11px;">MY ALBUMS</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-5 col-md-4 columna-favoritos">
+                            <div id="zona-movil"></div>
+                            <div id="favoritos-escritorio">
+                                <div class="seccion-favoritos">
+
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- Título de filtros -->
+                    <div class="row align-items-center pt-3 pb-3">
+                        <div class="col-7 d-flex align-items-center gap-2 boton-movil-filtros"
+                            style="padding-left:15px">
+                            <h5 class="pt-3">SORT BY</h5>
+                            <i class="icono-flecha" style="margin-top:10px;margin-left:4px;"
+                                data-feather="arrow-down"></i>
+                        </div>
+                        <div class="col-5 text-right mt-2">
+                            <div id="favoritos-movil"></div>
+                        </div>
+                    </div>
+                    <!-- Dos columnas para botones -->
+                    <div class="row filtros-movil show">
+                        <div class="col-12 pt-4">
+                            <div class="filter-buttons">
+                                <button data-filter="popular">Most popular</button>
+                                <button data-filter="latest">Latest</button>
+                                <button data-filter="random">Randomize</button>
+                            </div>
+                        </div>
+
+                        <div class="col-12 pt-4 pb-5 pb-md-0">
+                            <div class="filter-buttons">
+                                <button data-genre="132">Pop</button>
+                                <button data-genre="85">Rock</button>
+                                <button data-genre="152">Electronic</button>
+                                <button data-genre="116">Hip-hop</button>
+                                <button data-genre="113">Dance</button>
+                                <button data-genre="165">R&B</button>
+                                <button data-genre="106">Alternative</button>
+                                <button data-genre="466">Punk</button>
+                                <button data-genre="144">Soundtrack</button>
+                                <button data-genre="129">Jazz</button>
+                                <button data-genre="197">Classical</button>
+                                <button data-genre="464">House</button>
+                                <button data-genre="169">Metal</button>
+                            </div>
+                        </div>
+                        <div class="col-12 pt-1 pt-md-5">
+                            <div id="zona-escritorio">
+                                <div class="sesion-iniciada movil" style="display:none"></div>
+                            </div>
+                            <div class="bloque-form">
+                                <div class="toggle-form pb-2">
+                                    <button id="btn-login" class="active">Login</button>
+                                    <button id="btn-register">Register</button>
+                                </div>
+                                <form id="form-login">
+                                    <input type="mail" name="email" id="logEmail" required placeholder="MAIL/USERNAME">
+                                    <input type="password" name="password" id="logPassword" required
+                                        placeholder="PASSWORD">
+                                    <button type="submit">Go</button>
+                                </form>
+                                <form id="form-register" style="display:none">
+                                    <input type="mail" name="email" id="regEmail" required placeholder="EMAIL">
+                                    <input type="text" name="username" id="regUsername" required placeholder="USERNAME">
+                                    <input type="password" name="password" id="regPassword" required
+                                        placeholder="PASSWORD">
+                                    <button type="submit">Go</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-12 col-md-9">
+                <div class="album-grid">
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class="botonMode">
+            <button id="modo-tema" class="btn">
+                <i data-feather="sun"></i>
+            </button>
+        </div>
+
+        <script type="module" src="database.js"></script>
+        <script type="module" src="auth.js"></script>
+        <script type="module" src="script.js"></script>
+</body>
+
+</html>
