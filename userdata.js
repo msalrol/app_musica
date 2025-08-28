@@ -37,14 +37,14 @@ export async function guardarAlbumGeneral(userId, album) {
 }
 export async function obtenerAlbumGeneral(userId) {
     const refAlbum = ref(db, `users/${userId}/albumes/`);
-    return get(refAlbum).then(informacion => {
-        if (informacion.exists()) {
-            return Object.values(informacion.val());
-        } else {
-            return [];
-        }
-    })
+    const snap = await get(refAlbum);
+
+    if (!snap.exists()) return [];
+
+    // convertimos a array y filtramos undefined/null
+    return Object.values(snap.val()).filter(album => album.id != undefined);
 }
+
 export function eliminarAlbumGeneral(album) {
     const userId = auth.currentUser?.uid;
     const albumRef = ref(db, `users/${userId}/albumes/${album.id}`);
@@ -63,9 +63,9 @@ export async function obtenerHearList(albumId) {
 
     const hearRef = ref(db, `users/${userId}/albumes/hearlist/${albumId}/`);
     return get(hearRef).then(informacion => {
-        if(informacion.exists()){
+        if (informacion.exists()) {
             return Object.values(informacion.val());
-        }else{
+        } else {
             return [];
         }
     })

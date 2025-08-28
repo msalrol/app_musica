@@ -33,10 +33,10 @@ function activarBotonFavoritoIndividual(albumId) {
       const estaGuardadoActualizado = await obtenerAlbumGeneral(userId);
       const estaGuardadoAhora = estaGuardadoActualizado.some(saved => saved.id === albumId);
 
-      if(!estaGuardadoAhora){
+      if (!estaGuardadoAhora) {
         await guardarAlbumGeneral(userId, album);
         botonAlbumGeneral.classList.add('botonGirado');
-      }else{
+      } else {
         eliminarAlbumGeneral(album);
         botonAlbumGeneral.classList.remove('botonGirado')
       }
@@ -65,7 +65,9 @@ function activarBotonFavoritoIndividual(albumId) {
 
       if (!esFavoritoAhora) {
         await guardarFavorito(album); // Guarda solo uno
+        await guardarAlbumGeneral(userId, album);
         boton.classList.add('favorito');
+        botonAlbumGeneral.classList.add('botonGirado');
       } else {
         await eliminarFavorito(album); // Elimina solo ese
         boton.classList.remove('favorito');
@@ -180,21 +182,64 @@ botonMostrarAlbumes.addEventListener('click', () => {
     mostrarAvisoInicioSesion();
   } else {
     mostrarAlbumesGuardados(userId);
+    botonesUIFavoritos();
   }
 })
 
+//CREAR LOS BOTONES UI PARA NAVEGAR POR LOS ÁLBUMES GUARDADOS 
+
+function botonesUIFavoritos() {
+  const userId = auth.currentUser?.uid;
+  const gridAlbum = document.querySelectorAll('.album-grid')
+
+  const botonFavoritos = document.createElement('button');
+  const botonGuardado = document.createElement('button');
+  const botonListenList = document.createElement('button');
+  const contenedorBotones = document.querySelector('.botones-ui-albumes');
+  contenedorBotones.innerHTML = '';
+
+
+  botonFavoritos.type = 'button';
+  botonFavoritos.classList.add('btn-fav', 'btn');
+  botonFavoritos.innerHTML = '<i data-feather="star"></i>';
+  contenedorBotones.appendChild(botonFavoritos);
+
+  if (window.feather) feather.replace();
+  botonFavoritos.addEventListener('click', () => {
+    gridAlbum.innerHTML = '';
+    if (!botonFavoritos.classList.contains('favorito')) {
+      botonFavoritos.classList.add('favorito');
+      mostrarAlbumesFavoritos();
+    }else{
+      botonFavoritos.classList.remove('favorito');
+      mostrarAlbumesGuardados(userId);
+    }
+  })
+
+
+}
+//MOSTRAR LOS ÁLBUMES GUARDADOS 
 export async function mostrarAlbumesGuardados(userId) {
 
   const albumesGuardados = await obtenerAlbumGeneral(userId);
   if (!albumesGuardados) { return };
+  let gridActual = document.querySelector('.album-grid');
 
+  if (!gridActual) {
+    gridActual = document.createElement('div');
+    gridActual.classList.add('album-grid');
+    let albumIndividual = document.querySelector('.album-individual');
+    albumIndividual.innerHTML = '';
+    albumIndividual.appendChild(gridActual);
+  }
   estado.albumesFiltrados = albumesGuardados;
   if (estado.albumesFiltrados.length === 0) {
-    document.querySelector('.album-grid').innerHTML = '<div class="pt-5">No hay ningún álbum en favoritos.</div>';
+    gridActual.innerHTML = '<div class="pt-5">No hay ningún álbum guardado.</div>';
   } else {
-    document.querySelector('.album-grid').innerHTML = '';
+    gridActual.innerHTML = '';
     estado.paginaActual = 0;
     mostrarPagina(estado.paginaActual);
+
   }
 }
 //MOSTRAR ÁLBUMES FAVORITOS

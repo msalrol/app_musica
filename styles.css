@@ -465,7 +465,17 @@ select {
   .active{
       background:transparent;
   }
-
+  .columna-favoritos{
+      text-align: right;
+  }
+  .botones-ui-albumes{
+      margin-top:0px;
+      
+      text-align:right;
+  }
+  .botones-ui-albumes{
+      display:block;
+  }
 /* RESPONSIVE */
 .filtros-movil{
     display:block;

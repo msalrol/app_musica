@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         albumIndividual = await datosAlbumIndividual(albumId);
         albumesArtista = await datosAlbumesArtista(albumIndividual.artist.id);
         mostrarPaginaIndividual(puntuacionBaseDatos, comentarioBaseDatos);
-        console.log(albumesArtista);
+        //console.log(albumesArtista);
         mostrarAlbumesRelacionados();
 
         activarBotonFavoritoAlbum(albumIndividual);
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function mostrarPaginaIndividual(puntuacionBaseDatos = '', comentarioBaseDatos = '') {
     const albumGrid = document.querySelector('.album-individual');
     let esFavorito = false;
-    console.log(comentarioBaseDatos);
+    //console.log(comentarioBaseDatos);
     // 1. Creamos HTML
     const elementoHtml = crearAlbumIndividualHtml(albumIndividual, esFavorito, puntuacionBaseDatos, comentarioBaseDatos);
     albumGrid.innerHTML = elementoHtml;
@@ -81,7 +81,7 @@ function mostrarAlbumesRelacionados() {
     const albumGridRelacionados = document.querySelector('.related-albums');
 
     albumesArtista.slice(0, 6).forEach(album => {
-        console.log(album);
+        //console.log(album);
         if (document.querySelector(`.related-albums-cell[data-id="${album.id}"]`)) return '';
         const albumCellHtml = crearAlbumRelacionado(album);
         albumGridRelacionados.insertAdjacentHTML("beforeend", albumCellHtml);
@@ -197,7 +197,7 @@ function inicializarFormularioPuntuacion(userId) {
         const regex = /^([1-9](\.\d)?|10(\.0)?)$/;
 
         if (!regex.test(puntuacion.replace(',', '.'))) {
-            alert('Introduce máximo un decimal');
+            
             return;
         }
         console.log('Guardando puntuación para userId:', userId, 'albumId:', albumId, 'puntuacion:', puntuacionNum);
@@ -287,12 +287,13 @@ async function activarBotonFavoritoAlbum(album) {
 
 }
 
-//Mostrar favoritos
+/*Mostrar favoritos
 const mostrarFavoritos = document.querySelector('.btn-favourites');
 
 mostrarFavoritos.addEventListener('click', () => {
     window.location.href = 'index.html?favourites=true';
 })
+*/
 
 //Buscar form search
 const buscarPorTermino = document.getElementById('buscarInterna')
