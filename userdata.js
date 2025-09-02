@@ -22,7 +22,7 @@ export function obtenerFavoritos(userId) {
     const favsRef = ref(db, `users/${userId}/albumes/favoritos/`);
     return get(favsRef).then(snapshot => {
         if (snapshot.exists()) {
-            return Object.values(snapshot.val());
+            return Object.values(snapshot.val()).filter(album => album.id != undefined);
         } else {
             return [];
         }
@@ -53,15 +53,15 @@ export function eliminarAlbumGeneral(album) {
 
 //GUARDAR EN LA HEARLIST
 
-export async function guardarHearList(albumId, userId) {
+export async function guardarHearList(album, userId) {
 
-    const hearRef = ref(db, `users/${userId}/albumes/hearlist/${albumId}/`)
-    return set(hearRef, albumId);
+    const hearRef = ref(db, `users/${userId}/albumes/hearlist/${album.id}/`)
+    return set(hearRef, album);
 }
 
-export async function obtenerHearList(albumId) {
+export async function obtenerHearList(userId) {
 
-    const hearRef = ref(db, `users/${userId}/albumes/hearlist/${albumId}/`);
+    const hearRef = ref(db, `users/${userId}/albumes/hearlist/`);
     return get(hearRef).then(informacion => {
         if (informacion.exists()) {
             return Object.values(informacion.val());
@@ -69,6 +69,12 @@ export async function obtenerHearList(albumId) {
             return [];
         }
     })
+}
+export async function eliminarHearlist(album){
+    const userId = auth.currentUser?.uid;
+    const albumRef = ref(db, `users/${userId}/albumes/hearlist/${album.id}`);
+    return remove(albumRef, album);
+
 }
 //PUNTUACIONES ALBUM
 export async function guardarPuntuacion(userId, albumId, puntuacion) {

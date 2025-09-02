@@ -1,5 +1,5 @@
 //ÁLBUMES FAVORITOS
-import { guardarFavorito, eliminarFavorito, obtenerFavoritos, obtenerAlbumGeneral, eliminarAlbumGeneral, guardarAlbumGeneral } from './userData.js';
+import { guardarFavorito, eliminarFavorito, obtenerFavoritos, obtenerAlbumGeneral, eliminarAlbumGeneral, guardarAlbumGeneral, obtenerHearList } from './userData.js';
 import { auth, db } from './database.js';
 import { estado } from './estados.js';
 import { mostrarPagina } from './script.js';
@@ -198,22 +198,61 @@ function botonesUIFavoritos() {
   const contenedorBotones = document.querySelector('.botones-ui-albumes');
   contenedorBotones.innerHTML = '';
 
+  //todos los albumes
+  botonGuardado.type = 'button';
+  botonGuardado.classList.add('btn', 'btn-save', 'botonGirado');
+  botonGuardado.innerHTML = '<i data-feather="plus"></i>';
+  contenedorBotones.appendChild(botonGuardado);
 
+  //favoritos
   botonFavoritos.type = 'button';
   botonFavoritos.classList.add('btn-fav', 'btn');
   botonFavoritos.innerHTML = '<i data-feather="star"></i>';
   contenedorBotones.appendChild(botonFavoritos);
 
+  //listen list
+  botonListenList.type = 'button';
+  botonListenList.classList.add('btn');
+  botonListenList.innerHTML = '<i data-feather="list"><i>';
+  contenedorBotones.appendChild(botonListenList);
+
+  
+
+
   if (window.feather) feather.replace();
+  botonGuardado.addEventListener('click', ()=>{
+    gridAlbum.innerHTML = '';
+    mostrarAlbumesGuardados(userId)
+    botonFavoritos.classList.remove('favorito');
+    botonListenList.classList.remove('btn-added-hearlist');
+    botonGuardado.classList.add('botonGirado');
+  })
   botonFavoritos.addEventListener('click', () => {
     gridAlbum.innerHTML = '';
     if (!botonFavoritos.classList.contains('favorito')) {
       botonFavoritos.classList.add('favorito');
-      mostrarAlbumesFavoritos();
+      botonGuardado.classList.remove('botonGirado')
+      botonListenList.classList.remove('btn-added-hearlist');
+
+      mostrarAlbumesFavoritos(userId);
     }else{
       botonFavoritos.classList.remove('favorito');
       mostrarAlbumesGuardados(userId);
+      botonGuardado.classList.add('botonGirado')
     }
+  })
+  botonListenList.addEventListener('click', () =>{
+    gridAlbum.innerHTML = '';
+    if(!botonListenList.classList.contains('btn-added-hearlist')){
+    mostrarAlbumesHearlist(userId);
+    botonListenList.classList.add('btn-added-hearlist');
+    botonGuardado.classList.remove('botonGirado')
+    botonFavoritos.classList.remove('favorito');
+    }else{
+      botonListenList.classList.remove('btn-added-hearlist');
+      mostrarAlbumesGuardados(userId);
+    }
+
   })
 
 
@@ -244,10 +283,9 @@ export async function mostrarAlbumesGuardados(userId) {
 }
 //MOSTRAR ÁLBUMES FAVORITOS
 
-async function mostrarAlbumesFavoritos() {
-  const userId = auth.currentUser?.uid;
+async function mostrarAlbumesFavoritos(userId) {
   if (!userId) return;
-  2
+  
   const albumesFavoritos = await obtenerFavoritos(userId);
   estado.albumesFiltrados = albumesFavoritos;
   if (estado.albumesFiltrados.length === 0) {
@@ -257,6 +295,22 @@ async function mostrarAlbumesFavoritos() {
     estado.paginaActual = 0;
     mostrarPagina(estado.paginaActual);
   }
+}
+
+//MOSTRAR HEARLIST 
+
+async function mostrarAlbumesHearlist(userId){
+  if (!userId){return};
+  const albumesHearList = await obtenerHearList(userId);
+  estado.albumesFiltrados = albumesHearList;
+  if (estado.albumesFiltrados.length === 0) {
+    document.querySelector('.album-grid').innerHTML = '<div class="pt-5">No hay ningún álbum en la hearlist.</div>';
+  } else {
+    document.querySelector('.album-grid').innerHTML = '';
+    estado.paginaActual = 0;
+    mostrarPagina(estado.paginaActual);
+  }
+
 }
 //aviso si no se ha iniciado sesión
 

@@ -9,7 +9,15 @@ body {
     color: white !important;
     transition: all 0.2s ease;
 }
-
+body button{
+    color:white!important;
+}
+body.dark-mode button{
+    color:black!important;
+}
+body.dark-mode #add-hearlist, body.dark-mode #myalbums{
+    border:0.5px solid black!important;
+}
 body.dark-mode {
     background-color: white !important;
     color: black !important
@@ -473,9 +481,20 @@ select {
       
       text-align:right;
   }
-  .botones-ui-albumes{
-      display:block;
+  .added-hearlist{
+      background-color:#f94040!important;
   }
+  .btn-added-hearlist{
+      background-color:#f94040!important;
+      border-radius:4px;
+  }
+.botones-ui-albumes {
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    align-items: end;
+}
 /* RESPONSIVE */
 .filtros-movil{
     display:block;

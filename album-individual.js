@@ -1,7 +1,7 @@
 import { estado } from './estados.js';
 import { fadeInColumn, obtenerModo, cargarTracklist } from './script.js';
 import { auth, db } from './database.js';
-import { guardarPuntuacion, obtenerComentario, obtenerPuntuacion, guardarComentario, obtenerFavoritos, guardarFavorito, eliminarFavorito } from './userdata.js';
+import { guardarPuntuacion, obtenerComentario, obtenerPuntuacion, guardarComentario, obtenerFavoritos, guardarFavorito, eliminarFavorito, guardarHearList, obtenerHearList, eliminarHearlist } from './userdata.js';
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         mostrarPaginaIndividual(puntuacionBaseDatos, comentarioBaseDatos);
         //console.log(albumesArtista);
         mostrarAlbumesRelacionados();
-
+        activarBotonHearlist(albumIndividual);
         activarBotonFavoritoAlbum(albumIndividual);
         //CargamosPuntuacion form
         inicializarFormularioPuntuacion()
@@ -143,6 +143,8 @@ function crearAlbumIndividualHtml(album, esFavorito, puntuacion, comentarioBaseD
       <input class="numero" type="text" name="puntuacion" placeholder="0.0" value="${puntuacion}">
     </form>
     <button class="btn btn-fav ml-2 ml-md-4" data-id="${album.id}"><i class="${esFavorito ? 'favorito' : ''}" data-feather="star"></i></button>
+    <button style="font-size:11px; margin-left:13px;margin-top:4px;padding:2px 5px!important;border:0.5px solid white;" class="btn" id="add-hearlist">ADD TO HEARLIST <i style="margin-left:3px;width:19px!important;height:auto;"data-feather="list"></i></button>
+    
   </div>
       <p class="pb-3" style="text-transform:uppercase">${title} - ${artist.name}</p>
       <p>YEAR: ${release_date} <span style="margin-left: 30px;">GENRE: ${genre_id}</span></p>
@@ -197,7 +199,7 @@ function inicializarFormularioPuntuacion(userId) {
         const regex = /^([1-9](\.\d)?|10(\.0)?)$/;
 
         if (!regex.test(puntuacion.replace(',', '.'))) {
-            
+
             return;
         }
         console.log('Guardando puntuación para userId:', userId, 'albumId:', albumId, 'puntuacion:', puntuacionNum);
@@ -304,3 +306,43 @@ buscarPorTermino.addEventListener('submit', (e) => {
 
     window.location.href = `index.html?search=${busqueda}`;
 })
+
+//AÑADIR A LA HEARLIST
+
+async function activarBotonHearlist(album) {
+    const userId = auth.currentUser?.uid;
+    const botonHearlist = document.getElementById('add-hearlist');
+    const albumesHearlist = await obtenerHearList(userId);
+    const estaGuardado = albumesHearlist.some(a => a.id === album.id);
+
+    if(estaGuardado){
+        botonHearlist.innerHTML = 'ADDED TO HEARLIST <i style="margin-left:3px;width:19px!important;height:auto;"data-feather="list"></i>'
+        botonHearlist.classList.add('added-hearlist');
+        feather.replace();
+    }
+    botonHearlist.addEventListener('click', async () => {
+        try {
+            const hearListActualizada = await obtenerHearList(userId);
+            const estaGuardadoAhora = hearListActualizada.some(a => a.id === album.id);
+            console.log(estaGuardadoAhora);
+            if (!estaGuardadoAhora) {
+                albumesHearlist.push(album);
+                await guardarHearList(album, userId);
+                console.log('Album guardado!');
+                botonHearlist.innerHTML = 'ADDED TO HEARLIST <i style="margin-left:3px;width:19px!important;height:auto;"data-feather="list"></i>'
+                feather.replace();
+                botonHearlist.classList.add('added-hearlist');
+            } else {
+                eliminarHearlist(album);
+                botonHearlist.innerHTML = 'ADD TO HEARLIST <i style="margin-left:3px;width:19px!important;height:auto;"data-feather="list"></i>'
+                console.log('Album eliminado!')
+                feather.replace();
+                botonHearlist.classList.remove('added-hearlist');
+
+            }
+        }catch(err){
+            console.log(err);
+        }
+        
+    })
+}
